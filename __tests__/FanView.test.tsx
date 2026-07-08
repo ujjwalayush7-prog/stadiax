@@ -1,3 +1,10 @@
+/**
+ * Tests for the FanView component.
+ * Covers initial rendering, chat message submission, error handling,
+ * empty/loading guards, quick action buttons (including new Navigation
+ * and Sustainability buttons), and language selection.
+ */
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import FanView from '../src/components/FanView';
 
@@ -136,13 +143,56 @@ describe('FanView Component', () => {
     });
   });
 
-  it('handles quick action buttons correctly', () => {
+  it('handles Find Restrooms quick action button', () => {
     render(<FanView />);
     const findRestroomsBtn = screen.getByRole('button', { name: /Find Restrooms/i });
 
-    // Click quick action should populate input
     fireEvent.click(findRestroomsBtn);
     const input = screen.getByPlaceholderText('Ask me anything...') as HTMLInputElement;
     expect(input.value).toBe('Where is the nearest restroom from Block C?');
+  });
+
+  it('handles Navigate quick action button', () => {
+    render(<FanView />);
+    const navigateBtn = screen.getByRole('button', { name: /Navigate to Seat/i });
+
+    fireEvent.click(navigateBtn);
+    const input = screen.getByPlaceholderText('Ask me anything...') as HTMLInputElement;
+    expect(input.value).toBe('How do I get to my seat in Section 214, Row F?');
+  });
+
+  it('handles Sustainability quick action button', () => {
+    render(<FanView />);
+    const ecoBtn = screen.getByRole('button', { name: /Sustainability/i });
+
+    fireEvent.click(ecoBtn);
+    const input = screen.getByPlaceholderText('Ask me anything...') as HTMLInputElement;
+    expect(input.value).toMatch(/eco-friendly/i);
+  });
+
+  it('handles Transport quick action button', () => {
+    render(<FanView />);
+    const transportBtn = screen.getByRole('button', { name: /Find Transport/i });
+
+    fireEvent.click(transportBtn);
+    const input = screen.getByPlaceholderText('Ask me anything...') as HTMLInputElement;
+    expect(input.value).toMatch(/transport/i);
+  });
+
+  it('renders language selector with correct options', () => {
+    render(<FanView />);
+    const languageSelect = screen.getByLabelText(/Select Language/i);
+    expect(languageSelect).toBeInTheDocument();
+
+    // Check that multiple language options exist
+    const options = languageSelect.querySelectorAll('option');
+    expect(options.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it('renders chat messages container with correct ARIA attributes', () => {
+    render(<FanView />);
+    const chatLog = screen.getByRole('log');
+    expect(chatLog).toBeInTheDocument();
+    expect(chatLog).toHaveAttribute('aria-live', 'polite');
   });
 });

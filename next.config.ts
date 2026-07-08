@@ -50,6 +50,14 @@ const nextConfig: NextConfig = {
             value: 'on',
           },
           {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-origin',
+          },
+          {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
           },

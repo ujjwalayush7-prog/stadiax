@@ -1,3 +1,10 @@
+/**
+ * Tests for the StaffView component.
+ * Covers initial rendering, chat submission, error handling, loading guards,
+ * operational metric stat cards (including new Transportation and
+ * Sustainability cards), and ARIA accessibility attributes.
+ */
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import StaffView from '../src/components/StaffView';
 
@@ -87,5 +94,54 @@ describe('StaffView Component', () => {
       expect(screen.getByText('Error: Network failure')).toBeInTheDocument();
       expect(screen.queryByLabelText('AI is typing...')).not.toBeInTheDocument();
     });
+  });
+
+  it('renders Stadium Capacity stat card', () => {
+    render(<StaffView />);
+    expect(screen.getByText('Stadium Capacity')).toBeInTheDocument();
+    expect(screen.getByText('94%')).toBeInTheDocument();
+  });
+
+  it('renders Active Incidents stat card', () => {
+    render(<StaffView />);
+    expect(screen.getByText('Active Incidents')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument();
+  });
+
+  it('renders Energy Usage stat card', () => {
+    render(<StaffView />);
+    expect(screen.getByText('Energy Usage')).toBeInTheDocument();
+    expect(screen.getByText('4.2 MW')).toBeInTheDocument();
+  });
+
+  it('renders Staff Deployed stat card', () => {
+    render(<StaffView />);
+    expect(screen.getByText('Staff Deployed')).toBeInTheDocument();
+    expect(screen.getByText('412')).toBeInTheDocument();
+  });
+
+  it('renders Transportation stat card', () => {
+    render(<StaffView />);
+    expect(screen.getByText('Transportation')).toBeInTheDocument();
+    expect(screen.getByText('88%')).toBeInTheDocument();
+  });
+
+  it('renders Sustainability stat card', () => {
+    render(<StaffView />);
+    expect(screen.getByText('Sustainability')).toBeInTheDocument();
+    expect(screen.getByText('73%')).toBeInTheDocument();
+  });
+
+  it('renders operational metrics section with correct ARIA label', () => {
+    render(<StaffView />);
+    const section = screen.getByLabelText('Operational Metrics');
+    expect(section).toBeInTheDocument();
+  });
+
+  it('renders chat log with correct ARIA attributes', () => {
+    render(<StaffView />);
+    const chatLog = screen.getByRole('log');
+    expect(chatLog).toBeInTheDocument();
+    expect(chatLog).toHaveAttribute('aria-live', 'polite');
   });
 });
