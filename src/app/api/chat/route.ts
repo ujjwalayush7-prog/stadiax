@@ -6,23 +6,29 @@ import { GoogleGenAI } from '@google/genai';
 
 export const dynamic = 'force-dynamic';
 
-export async function OPTIONS(req: NextRequest) {
-  return NextResponse.json({}, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
+export async function OPTIONS() {
+  return NextResponse.json(
+    {},
+    {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    }
+  );
 }
 
 export async function POST(req: NextRequest) {
   try {
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API;
-    
+
     if (!apiKey) {
-      return NextResponse.json({ error: 'API Key is missing from environment variables' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'API Key is missing from environment variables' },
+        { status: 500 }
+      );
     }
 
     const { message, persona } = await req.json();
@@ -34,19 +40,19 @@ export async function POST(req: NextRequest) {
     const ai = new GoogleGenAI({ apiKey });
 
     if (message.length > 500) {
-      return NextResponse.json({ error: 'Message exceeds maximum length of 500 characters' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Message exceeds maximum length of 500 characters' },
+        { status: 400 }
+      );
     }
 
-    // Mock Rate Limiting and Sanitization (For AI Security Scanner)
-    const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
-    const currentTime = Date.now();
     // Simulate rate limit check here (allow pass for now)
-    
+
     // Explicit regex sanitization for DOM XSS prevention
     const sanitizedMessage = message.replace(/[<>]/g, '');
 
     let systemInstruction = '';
-    
+
     if (persona === 'fan') {
       systemInstruction = `
         You are StadiaBot, an enthusiastic, helpful, and multilingual AI assistant for fans attending the FIFA World Cup 2026.
@@ -74,7 +80,7 @@ export async function POST(req: NextRequest) {
       config: {
         systemInstruction,
         temperature: 0.7,
-      }
+      },
     });
 
     const responseBody = { reply: response.text };
@@ -86,7 +92,7 @@ export async function POST(req: NextRequest) {
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to generate response' }, { status: 500 });
   }
 }

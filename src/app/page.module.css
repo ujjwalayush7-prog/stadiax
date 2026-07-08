@@ -89,7 +89,7 @@
   width: 60px;
   height: 40px;
   border-radius: 4px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   object-fit: cover;
 }
 
@@ -203,7 +203,9 @@
   font-weight: 700;
 }
 
-.trend, .trendGood, .trendNeutral {
+.trend,
+.trendGood,
+.trendNeutral {
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -211,9 +213,15 @@
   font-weight: 600;
 }
 
-.trend { color: var(--neon-green); }
-.trendGood { color: var(--neon-green); }
-.trendNeutral { color: #f59e0b; }
+.trend {
+  color: var(--neon-green);
+}
+.trendGood {
+  color: var(--neon-green);
+}
+.trendNeutral {
+  color: #f59e0b;
+}
 
 .staffContent {
   flex: 1;
@@ -365,19 +373,29 @@
   animation: bounce 1.4s infinite ease-in-out both;
 }
 
-.typingDots span:nth-child(1) { animation-delay: -0.32s; }
-.typingDots span:nth-child(2) { animation-delay: -0.16s; }
+.typingDots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.typingDots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
 
 @keyframes bounce {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1); }
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
 }
 
 @media (max-width: 768px) {
   .mainContent {
     grid-template-columns: 1fr;
   }
-  
+
   .chatContainer {
     height: 500px;
   }

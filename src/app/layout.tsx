@@ -1,22 +1,24 @@
-import type { Metadata } from "next";
-import { Outfit, Bebas_Neue } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Outfit, Bebas_Neue } from 'next/font/google';
+import './globals.css';
 
 const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
+  variable: '--font-outfit',
+  subsets: ['latin'],
 });
 
 const bebas = Bebas_Neue({
-  weight: "400",
-  variable: "--font-bebas",
-  subsets: ["latin"],
+  weight: '400',
+  variable: '--font-bebas',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "StadiaX | PromptWarsVirtual Challenge 4",
-  description: "Generative AI enabled stadium operations and fan experience solution for FIFA World Cup 2026. Leveraging AI to improve navigation, crowd management, accessibility, transportation, sustainability, multilingual assistance, operational intelligence, and real-time decision support.",
-  keywords: "Generative AI, navigation, crowd management, accessibility, transportation, sustainability, multilingual assistance, operational intelligence, real-time decision support, FIFA World Cup 2026",
+  title: 'StadiaX | PromptWarsVirtual Challenge 4',
+  description:
+    'Generative AI enabled stadium operations and fan experience solution for FIFA World Cup 2026. Leveraging AI to improve navigation, crowd management, accessibility, transportation, sustainability, multilingual assistance, operational intelligence, and real-time decision support.',
+  keywords:
+    'Generative AI, navigation, crowd management, accessibility, transportation, sustainability, multilingual assistance, operational intelligence, real-time decision support, FIFA World Cup 2026',
 };
 
 export default function RootLayout({
