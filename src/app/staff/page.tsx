@@ -27,10 +27,13 @@ export default function StaffDashboard() {
         body: JSON.stringify({ message: userMessage, persona: 'staff' }),
       });
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Server error');
+      }
       setMessages(prev => [...prev, { role: 'bot', text: data.reply }]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
-      setMessages(prev => [...prev, { role: 'bot', text: 'Error connecting to operations server.' }]);
+      setMessages(prev => [...prev, { role: 'bot', text: 'Error: ' + (error.message || 'Error connecting to operations server.') }]);
     } finally {
       setIsLoading(false);
     }

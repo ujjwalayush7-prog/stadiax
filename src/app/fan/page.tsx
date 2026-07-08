@@ -27,10 +27,13 @@ export default function FanDashboard() {
         body: JSON.stringify({ message: userMessage, persona: 'fan' }),
       });
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Server error');
+      }
       setMessages(prev => [...prev, { role: 'bot', text: data.reply }]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
-      setMessages(prev => [...prev, { role: 'bot', text: 'Sorry, I encountered an error connecting to the servers.' }]);
+      setMessages(prev => [...prev, { role: 'bot', text: 'Error: ' + (error.message || 'Unable to connect to servers.') }]);
     } finally {
       setIsLoading(false);
     }

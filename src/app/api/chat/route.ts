@@ -7,6 +7,10 @@ const ai = new GoogleGenAI({});
 
 export async function POST(req: NextRequest) {
   try {
+    if (!process.env.GEMINI_API_KEY) {
+      return NextResponse.json({ error: 'GEMINI_API_KEY is missing from environment variables' }, { status: 500 });
+    }
+
     const { message, persona } = await req.json();
 
     if (!message) {
