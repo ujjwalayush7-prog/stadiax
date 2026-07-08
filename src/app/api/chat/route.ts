@@ -6,6 +6,17 @@ import { GoogleGenAI } from '@google/genai';
 
 export const dynamic = 'force-dynamic';
 
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json({}, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API;
