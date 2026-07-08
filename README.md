@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StadiaX 🏟️
 
-## Getting Started
+**StadiaX** is a GenAI-enabled stadium operations and fan experience platform designed specifically for the **FIFA World Cup 2026**. 
 
-First, run the development server:
+Built with **Next.js** and powered by **Google Gemini 2.5 Flash**, StadiaX provides real-time, multilingual assistance and operational intelligence for both football fans and stadium staff.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 👤 For Fans
+- **Live Match Dashboard**: Real-time score updates and match events.
+- **StadiaBot AI**: A multilingual GenAI assistant capable of answering questions about stadium navigation, food options, transport, and accessibility.
+- **Quick Actions**: One-tap buttons to instantly locate restrooms, sustainable transport, and wheelchair-accessible routes.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🛡️ For Staff & Organizers
+- **Operational Intelligence Grid**: Live metrics monitoring stadium capacity, active incidents, and energy usage.
+- **Operations AI**: Advanced GenAI decision support to help staff manage crowd congestion, deploy volunteers, and ensure a safe environment.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Tech Stack
+- **Framework**: Next.js (App Router)
+- **Language**: TypeScript
+- **Styling**: Vanilla CSS Modules (Glassmorphism & FIFA 2026 Theme)
+- **AI Integration**: `@google/genai` (Gemini 2.5 Flash)
+- **Icons**: Lucide React
 
-## Learn More
+## 🚀 Installation & Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/ujjwalayush7-prog/stadiax.git
+   cd stadiax
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Set up Environment Variables:**
+   Create a `.env.local` file in the root directory and add your Gemini API Key:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
 
-## Deploy on Vercel
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. **Open the application:**
+   Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ☁️ Deployment
+
+StadiaX is fully optimized for Vercel deployment. Simply import the repository into your Vercel dashboard and add the `GEMINI_API_KEY` to the environment variables before deploying.
+
+---
+
+### 👨‍💻 Credits
+Built with ❤️ by **Ujjwal Ayush**.
