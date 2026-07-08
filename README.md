@@ -24,6 +24,15 @@ Built with **Next.js** and powered by **Google Gemini 2.5 Flash**, StadiaX provi
 - **AI Integration**: `@google/genai` (Gemini 2.5 Flash)
 - **Icons**: Lucide React
 
+## Problem Statement Alignment
+Our platform directly addresses the #PromptWarsVirtual Challenge 4 core requirements:
+- **Generative AI Integration**: Powered by Google Gemini 2.5 Flash (`@google/genai` SDK) to act as an intelligent stadium assistant.
+- **Navigation & Crowd Management**: Staff Operations view provides active incident reporting and crowd capacity metrics.
+- **Accessibility & Transport**: Fan Experience view queries AI specifically for wheelchair routes and sustainable transport.
+- **Sustainability**: Dashboard tracks Energy Usage (-12% optimization) and encourages sustainable options.
+- **Multilingual Assistance**: Gemini automatically translates and responds in the fan's native language.
+- **Real-Time Decision Support**: The Operations AI processes capacity and incident stats to advise on volunteer deployment.
+
 ## 🚀 Installation & Setup
 
 1. **Clone the repository:**

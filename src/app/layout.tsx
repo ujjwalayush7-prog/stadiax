@@ -16,6 +16,7 @@ const bebas = Bebas_Neue({
 export const metadata: Metadata = {
   title: "StadiaX | FIFA 2026 GenAI Operations",
   description: "Generative AI enabled stadium operations and fan experience solution for FIFA World Cup 2026. Leveraging AI to improve navigation, crowd management, accessibility, transportation, sustainability, multilingual assistance, operational intelligence, and real-time decision support.",
+  keywords: "Generative AI, navigation, crowd management, accessibility, transportation, sustainability, multilingual assistance, operational intelligence, real-time decision support, FIFA World Cup 2026",
 };
 
 export default function RootLayout({

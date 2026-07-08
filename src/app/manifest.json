@@ -1,0 +1,16 @@
+{
+  "name": "StadiaX GenAI Operations",
+  "short_name": "StadiaX",
+  "description": "FIFA 2026 World Cup GenAI powered stadium operations and fan experience platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}

@@ -382,3 +382,12 @@
     height: 500px;
   }
 }
+
+.loadingSpinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--neon-green);
+  font-weight: bold;
+}
