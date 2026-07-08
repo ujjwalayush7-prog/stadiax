@@ -1,22 +1,29 @@
 :root {
   --background: #0B0F14;
-  --background-secondary: #151B23;
-  --card-bg: #1E2632;
+  --surface: #151B23;
+  --card: #1E2632;
+  
+  --primary: #4CFF6A;
+  --secondary: #1EC8FF;
+  --accent: #7B61FF;
+  
+  --success: #22C55E;
+  --warning: #FFC857;
+  --error: #FF4D4D;
+  
   --foreground: #F8FAFC;
   --text-secondary: #94A3B8;
+  --border: #2E3A47;
   
-  --primary-purple: #1EC8FF; /* Cyan acts as the primary gradient partner */
-  --primary-purple-glow: rgba(30, 200, 255, 0.4);
-  
-  --neon-green: #4CFF6A;
+  --neon-green: var(--primary);
   --neon-green-glow: rgba(76, 255, 106, 0.4);
+  --fifa-blue: var(--secondary);
+  --fifa-red: var(--error);
+  --primary-purple: var(--accent);
+  --primary-purple-glow: rgba(123, 97, 255, 0.5);
   
-  --fifa-red: #FF4D4D; /* Error */
-  --fifa-blue: #1EC8FF; /* Cyan */
-  --warning-gold: #FFC857;
-  
-  --glass-bg: rgba(30, 38, 50, 0.6); /* Based on Charcoal */
-  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-bg: rgba(30, 38, 50, 0.6);
+  --glass-border: var(--border);
 }
 
 html,

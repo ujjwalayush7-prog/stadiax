@@ -67,7 +67,7 @@ export default function FanView() {
         </div>
         <div className={styles.teams}>
           <div className={styles.team}>
-            <Image src="https://flagcdn.com/w160/us.png" alt="USA Flag" width={60} height={40} className={styles.flag} unoptimized />
+            <Image src="https://flagcdn.com/w160/us.png" alt="USA Flag" width={60} height={40} className={styles.flag} priority />
             <h2>USA</h2>
           </div>
           <div className={styles.score}>
@@ -75,7 +75,7 @@ export default function FanView() {
             <span>78&apos;</span>
           </div>
           <div className={styles.team}>
-            <Image src="https://flagcdn.com/w160/gb-eng.png" alt="England Flag" width={60} height={40} className={styles.flag} unoptimized />
+            <Image src="https://flagcdn.com/w160/gb-eng.png" alt="England Flag" width={60} height={40} className={styles.flag} priority />
             <h2>ENG</h2>
           </div>
         </div>
