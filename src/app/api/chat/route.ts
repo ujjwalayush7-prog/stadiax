@@ -13,8 +13,12 @@ export async function POST(req: NextRequest) {
 
     const { message, persona } = await req.json();
 
-    if (!message) {
-      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+    if (!message || typeof message !== 'string') {
+      return NextResponse.json({ error: 'Valid message string is required' }, { status: 400 });
+    }
+
+    if (message.length > 500) {
+      return NextResponse.json({ error: 'Message exceeds maximum length of 500 characters' }, { status: 400 });
     }
 
     let systemInstruction = '';
