@@ -1,5 +1,7 @@
 # StadiaX 🏟️
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Click%20Here-success?style=for-the-badge&logo=vercel)](https://stadiax.vercel.app/)
+
 **StadiaX** is a GenAI-enabled stadium operations and fan experience platform designed specifically for the **FIFA World Cup 2026**. 
 
 Built with **Next.js** and powered by **Google Gemini 2.5 Flash**, StadiaX provides real-time, multilingual assistance and operational intelligence for both football fans and stadium staff.
