@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 
-// Initialize the GenAI SDK
-// It automatically picks up the GEMINI_API_KEY from environment variables
-const ai = new GoogleGenAI({});
+// The GenAI SDK is imported, but we instantiate it inside the POST handler
+// to prevent Next.js edge runtime build errors.
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +18,8 @@ export async function POST(req: NextRequest) {
     if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: 'Valid message string is required' }, { status: 400 });
     }
+
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     if (message.length > 500) {
       return NextResponse.json({ error: 'Message exceeds maximum length of 500 characters' }, { status: 400 });

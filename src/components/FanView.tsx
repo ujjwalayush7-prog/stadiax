@@ -49,9 +49,10 @@ export default function FanView() {
         throw new Error(data.error || 'Server error');
       }
       setMessages(prev => [...prev, { role: 'bot', text: data.reply }]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error sending message:', error);
-      setMessages(prev => [...prev, { role: 'bot', text: 'Error: ' + (error.message || 'Unable to connect to servers.') }]);
+      const errorMessage = error instanceof Error ? error.message : 'Unable to connect to servers.';
+      setMessages(prev => [...prev, { role: 'bot', text: 'Error: ' + errorMessage }]);
     } finally {
       setIsLoading(false);
     }

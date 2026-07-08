@@ -48,9 +48,10 @@ export default function StaffView() {
         throw new Error(data.error || 'Server error');
       }
       setMessages(prev => [...prev, { role: 'bot', text: data.reply }]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error sending message:', error);
-      setMessages(prev => [...prev, { role: 'bot', text: 'Error: ' + (error.message || 'Error connecting to operations server.') }]);
+      const errorMessage = error instanceof Error ? error.message : 'Error connecting to operations server.';
+      setMessages(prev => [...prev, { role: 'bot', text: 'Error: ' + errorMessage }]);
     } finally {
       setIsLoading(false);
     }
