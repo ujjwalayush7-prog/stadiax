@@ -32,13 +32,32 @@ describe('StaffView Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Sending staff to Gate 4.')).toBeInTheDocument();
+      expect(screen.queryByLabelText('AI is typing...')).not.toBeInTheDocument();
     });
+  });
+
+  it('does not submit when already loading', async () => {
+    // Return a promise that never resolves so it stays in loading state
+    (global.fetch as jest.Mock).mockImplementationOnce(() => new Promise(() => {}));
+
+    render(<StaffView />);
+    const input = screen.getByPlaceholderText('Query operational intelligence...');
+    const button = screen.getByRole('button', { name: /Send message/i });
+
+    // First click initiates loading state
+    fireEvent.change(input, { target: { value: 'Loading check' } });
+    fireEvent.click(button);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    // Second click should return early due to isLoading
+    fireEvent.click(button);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
   it('handles API error response gracefully', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: false,
-      json: async () => ({ error: 'Connection Error' }),
+      json: async () => ({ error: 'API Error occurred' }),
     });
 
     render(<StaffView />);
@@ -49,7 +68,8 @@ describe('StaffView Component', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('Error: Connection Error')).toBeInTheDocument();
+      expect(screen.getByText('Error: API Error occurred')).toBeInTheDocument();
+      expect(screen.queryByLabelText('AI is typing...')).not.toBeInTheDocument();
     });
   });
 
@@ -65,6 +85,7 @@ describe('StaffView Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Error: Network failure')).toBeInTheDocument();
+      expect(screen.queryByLabelText('AI is typing...')).not.toBeInTheDocument();
     });
   });
 });

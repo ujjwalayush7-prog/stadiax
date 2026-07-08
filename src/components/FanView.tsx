@@ -21,6 +21,7 @@ export default function FanView() {
   ]);
   const [input, setInput] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [language, setLanguage] = useState<string>('en');
 
   /**
    * Handles sending a message to the Gemini backend API.
@@ -40,7 +41,7 @@ export default function FanView() {
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userMessage, persona: 'fan' }),
+          body: JSON.stringify({ message: userMessage, persona: 'fan', language }),
         });
         const data = await response.json();
         if (!response.ok) {
@@ -135,8 +136,21 @@ export default function FanView() {
 
         <div className={`glass-panel ${styles.chatContainer}`}>
           <header className={styles.chatHeader}>
-            <h3>StadiaBot</h3>
-            <span className={styles.aiBadge}>Powered by Gemini 2.5 Flash</span>
+            <div className={styles.headerLeft}>
+              <h3>StadiaBot</h3>
+              <span className={styles.aiBadge}>Powered by Gemini 2.5 Flash</span>
+            </div>
+            <select
+              aria-label="Select Language"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className={styles.languageSelect}
+            >
+              <option value="en">EN</option>
+              <option value="es">ES</option>
+              <option value="fr">FR</option>
+              <option value="ar">AR</option>
+            </select>
           </header>
 
           <div className={styles.chatMessages} aria-live="polite" aria-atomic="true">

@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { message, persona } = await req.json();
+    const { message, persona, language = 'en' } = await req.json();
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: 'Valid message string is required' }, { status: 400 });
@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
         - Suggest sustainable transport options when asked about leaving.
         - If asked about accessibility, provide clear, supportive guidance.
         - IMPORTANT: Do not use any markdown formatting (like *, **, or #) in your response. Provide pure plain text.
+        - IMPORTANT: You MUST respond in the following language code: ${language}.
       `;
     } else {
       systemInstruction = `
@@ -71,6 +72,7 @@ export async function POST(req: NextRequest) {
         - Keep answers professional, concise, and focused on safety and efficiency.
         - If asked about crowd control, suggest rerouting fans or deploying additional volunteers.
         - IMPORTANT: Do not use any markdown formatting (like *, **, or #) in your response. Provide pure plain text.
+        - IMPORTANT: You MUST respond in the following language code: ${language}.
       `;
     }
 

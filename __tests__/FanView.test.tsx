@@ -36,6 +36,7 @@ describe('FanView Component', () => {
     // Wait for the bot response to render
     await waitFor(() => {
       expect(screen.getByText('Here is the restroom.')).toBeInTheDocument();
+      expect(screen.queryByLabelText('AI is typing...')).not.toBeInTheDocument();
     });
   });
 
@@ -54,6 +55,7 @@ describe('FanView Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Error: API Error occurred')).toBeInTheDocument();
+      expect(screen.queryByLabelText('AI is typing...')).not.toBeInTheDocument();
     });
   });
 
@@ -69,6 +71,7 @@ describe('FanView Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Error: Network failure')).toBeInTheDocument();
+      expect(screen.queryByLabelText('AI is typing...')).not.toBeInTheDocument();
     });
   });
 
@@ -80,7 +83,10 @@ describe('FanView Component', () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it('does not submit when already loading', () => {
+  it('does not submit when already loading', async () => {
+    // Return a promise that never resolves so it stays in loading state
+    (global.fetch as jest.Mock).mockImplementationOnce(() => new Promise(() => {}));
+
     render(<FanView />);
     const input = screen.getByPlaceholderText('Ask me anything...');
     const button = screen.getByRole('button', { name: /Send message/i });
@@ -110,6 +116,7 @@ describe('FanView Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Error: Server error')).toBeInTheDocument();
+      expect(screen.queryByLabelText('AI is typing...')).not.toBeInTheDocument();
     });
   });
 
@@ -125,6 +132,7 @@ describe('FanView Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Error: Unable to connect to servers.')).toBeInTheDocument();
+      expect(screen.queryByLabelText('AI is typing...')).not.toBeInTheDocument();
     });
   });
 
