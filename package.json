@@ -1,6 +1,7 @@
 {
-  "name": "stadiax",
+  "name": "promptwarsvirtual-challenge-4",
   "version": "0.1.0",
+  "description": "PromptWarsVirtual Challenge 4 - Generative AI enabled stadium operations and fan experience solution for FIFA World Cup 2026. Focuses on navigation, crowd management, accessibility, transportation, sustainability, multilingual assistance, operational intelligence, and real-time decision support.",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

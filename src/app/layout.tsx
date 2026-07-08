@@ -31,7 +31,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body>{children}</body>
+      <body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        {children}
+      </body>
     </html>
   );
 }
