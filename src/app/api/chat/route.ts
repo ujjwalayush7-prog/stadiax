@@ -66,9 +66,16 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    return NextResponse.json({ reply: response.text });
+    const responseBody = { reply: response.text };
+    return NextResponse.json(responseBody, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
   } catch (error) {
-    console.error('Error generating AI response:', error);
     return NextResponse.json({ error: 'Failed to generate response' }, { status: 500 });
   }
 }

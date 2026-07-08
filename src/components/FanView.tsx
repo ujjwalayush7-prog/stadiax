@@ -5,13 +5,7 @@ import Image from 'next/image';
 import { Send, MapPin, Coffee, Bus, Accessibility } from 'lucide-react';
 import styles from '../app/page.module.css';
 
-/**
- * Message interface for chat UI
- */
-interface ChatMessage {
-  role: 'user' | 'bot';
-  text: string;
-}
+import { ChatMessage } from '../types';
 
 /**
  * FanView Component
@@ -50,7 +44,6 @@ export default function FanView() {
       }
       setMessages(prev => [...prev, { role: 'bot', text: data.reply }]);
     } catch (error: unknown) {
-      console.error('Error sending message:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unable to connect to servers.';
       setMessages(prev => [...prev, { role: 'bot', text: 'Error: ' + errorMessage }]);
     } finally {
@@ -62,7 +55,7 @@ export default function FanView() {
     <>
       <section className={`glass-panel ${styles.scorePanel}`} aria-label="Live Match Score">
         <div className={styles.matchInfo}>
-          <span className={styles.liveBadge} role="status" aria-live="assertive"><span className="live-indicator"></span> LIVE</span>
+          <span className={styles.liveBadge} role="status" aria-live="assertive" aria-atomic="true"><span className="live-indicator"></span> LIVE</span>
           <span className={styles.tournament}>FIFA World Cup 2026™</span>
         </div>
         <div className={styles.teams}>
@@ -107,7 +100,7 @@ export default function FanView() {
             <span className={styles.aiBadge}>Powered by Gemini 2.5 Flash</span>
           </header>
           
-          <div className={styles.chatMessages} aria-live="polite">
+          <div className={styles.chatMessages} aria-live="polite" aria-atomic="true">
             {messages.map((msg, idx) => (
               <div key={idx} className={`${styles.message} ${msg.role === 'user' ? styles.userMsg : styles.botMsg}`}>
                 <div className={styles.msgBubble}>{msg.text}</div>
@@ -125,7 +118,9 @@ export default function FanView() {
           </div>
 
           <form className={styles.chatInput} onSubmit={sendMessage}>
+            <label htmlFor="chat-input-fan" className="sr-only">Type your message</label>
             <input 
+              id="chat-input-fan"
               type="text" 
               value={input}
               onChange={(e) => setInput(e.target.value)}

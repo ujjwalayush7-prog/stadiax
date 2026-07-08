@@ -4,13 +4,7 @@ import { useState, useCallback } from 'react';
 import { Send, Users, Zap, AlertTriangle, ShieldCheck } from 'lucide-react';
 import styles from '../app/page.module.css';
 
-/**
- * Message interface for chat UI
- */
-interface ChatMessage {
-  role: 'user' | 'bot';
-  text: string;
-}
+import { ChatMessage } from '../types';
 
 /**
  * StaffView Component
@@ -49,7 +43,6 @@ export default function StaffView() {
       }
       setMessages(prev => [...prev, { role: 'bot', text: data.reply }]);
     } catch (error: unknown) {
-      console.error('Error sending message:', error);
       const errorMessage = error instanceof Error ? error.message : 'Error connecting to operations server.';
       setMessages(prev => [...prev, { role: 'bot', text: 'Error: ' + errorMessage }]);
     } finally {
@@ -59,6 +52,10 @@ export default function StaffView() {
 
   return (
     <div className={styles.staffContent}>
+      <div className={styles.matchInfo}>
+        <span className={styles.liveBadge} role="status" aria-live="assertive" aria-atomic="true"><span className="live-indicator"></span> LIVE</span>
+        <span className={styles.tournament}>FIFA World Cup 2026™</span>
+      </div>
       <section className={styles.statsGrid} aria-label="Operational Metrics">
         <div className={`glass-panel ${styles.statCard}`}>
           <div className={styles.statHeader}>
@@ -103,7 +100,7 @@ export default function StaffView() {
           <span className={styles.aiBadge}>Secure Operations Link</span>
         </header>
         
-        <div className={styles.chatMessages} aria-live="polite">
+        <div className={styles.chatMessages} aria-live="polite" aria-atomic="true">
           {messages.map((msg, idx) => (
             <div key={idx} className={`${styles.message} ${msg.role === 'user' ? styles.userMsg : styles.botMsg}`}>
               <div className={styles.msgBubble}>{msg.text}</div>
@@ -121,7 +118,9 @@ export default function StaffView() {
         </div>
 
         <form className={styles.chatInput} onSubmit={sendMessage}>
+          <label htmlFor="chat-input-staff" className="sr-only">Type your message</label>
           <input 
+            id="chat-input-staff"
             type="text" 
             value={input}
             onChange={(e) => setInput(e.target.value)}
