@@ -9,17 +9,18 @@ import type { Persona } from '../../../types';
 export const dynamic = 'force-dynamic';
 
 const allowedOrigin = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const responseHeaders = {
+  'Access-Control-Allow-Origin': allowedOrigin,
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, X-Staff-Access-Token',
+};
 
 export async function OPTIONS() {
   return NextResponse.json(
     {},
     {
       status: 200,
-      headers: {
-        'Access-Control-Allow-Origin': allowedOrigin,
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, X-Staff-Access-Token',
-      },
+      headers: responseHeaders,
     }
   );
 }
@@ -71,16 +72,39 @@ function getClientIdentifier(req: NextRequest): string {
   return forwardedFor || realIp || 'unknown-client';
 }
 
+function buildFallbackReply(persona: Persona, message: string): string {
+  const highPriorityIncident = operationsSnapshot.incidents.find(
+    (incident) => incident.severity === 'high'
+  );
+  const lowerMessage = message.toLowerCase();
+
+  if (persona === 'staff') {
+    return `Highest priority: ${highPriorityIncident?.title}. ${highPriorityIncident?.recommendation} Accessibility impact: ${operationsSnapshot.accessibility.recommendation} Transit status: ${operationsSnapshot.transport.metroStatus}.`;
+  }
+
+  if (lowerMessage.includes('transport') || lowerMessage.includes('metro') || lowerMessage.includes('parking')) {
+    return `Metro is ${operationsSnapshot.transport.metroStatus}. Parking lots are ${operationsSnapshot.transport.parkingCapacity}% full, so use Metro North exits if possible and avoid rideshare until queues ease.`;
+  }
+
+  if (lowerMessage.includes('access') || lowerMessage.includes('wheelchair')) {
+    return `${operationsSnapshot.accessibility.recommendation} Open accessible routes include ${operationsSnapshot.accessibility.openRoutes.join(', ')}.`;
+  }
+
+  if (lowerMessage.includes('eco') || lowerMessage.includes('sustain')) {
+    return `${operationsSnapshot.sustainability.recommendation} Current waste diversion is ${operationsSnapshot.sustainability.wasteDiversion}% against an ${operationsSnapshot.sustainability.target}% target.`;
+  }
+
+  return `For the fastest route right now, avoid Gate 4 congestion and use Gates 2 or 6. The match is ${operationsSnapshot.match.score} in minute ${operationsSnapshot.match.minute}, stadium capacity is ${operationsSnapshot.capacity.percentage}%, and accessible support is available through ${operationsSnapshot.accessibility.openRoutes[0]}.`;
+}
+
+function logProviderError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  console.error('Gemini provider failed, using operations fallback:', message);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API;
-
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: 'API Key is missing from environment variables' },
-        { status: 500 }
-      );
-    }
 
     if (isRateLimited(getClientIdentifier(req))) {
       return NextResponse.json(
@@ -113,31 +137,43 @@ export async function POST(req: NextRequest) {
     }
 
     const sanitizedMessage = message.replace(/[<>]/g, '');
-    const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: GEMINI_MODEL,
-      contents: sanitizedMessage,
-      config: {
-        systemInstruction: buildSystemInstruction(persona, language),
-        temperature: 0.7,
-      },
-    });
 
-    return NextResponse.json(
-      { reply: response.text },
-      {
-        status: 200,
-        headers: {
-          'Access-Control-Allow-Origin': allowedOrigin,
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, X-Staff-Access-Token',
+    if (!apiKey) {
+      return NextResponse.json(
+        { reply: buildFallbackReply(persona, sanitizedMessage), source: 'operations-fallback' },
+        { status: 200, headers: responseHeaders }
+      );
+    }
+
+    try {
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent({
+        model: GEMINI_MODEL,
+        contents: sanitizedMessage,
+        config: {
+          systemInstruction: buildSystemInstruction(persona, language),
+          temperature: 0.7,
         },
+      });
+
+      const reply = response.text?.trim();
+      if (!reply) {
+        throw new Error('Gemini returned an empty response');
       }
-    );
-  } catch {
-    return NextResponse.json(
-      { error: 'Failed to generate response' },
-      { status: 500 }
-    );
+
+      return NextResponse.json(
+        { reply, source: 'gemini' },
+        { status: 200, headers: responseHeaders }
+      );
+    } catch (error) {
+      logProviderError(error);
+      return NextResponse.json(
+        { reply: buildFallbackReply(persona, sanitizedMessage), source: 'operations-fallback' },
+        { status: 200, headers: responseHeaders }
+      );
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Invalid chat request';
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }
