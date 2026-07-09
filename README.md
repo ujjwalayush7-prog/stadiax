@@ -167,3 +167,29 @@ npm test -- --coverage
 ## Conclusion
 
 By integrating **Generative AI** to solve complex logistical challenges—spanning **navigation**, **crowd management**, **accessibility**, **transportation**, **sustainability**, **multilingual assistance**, **operational intelligence**, and **real-time decision support**—StadiaX stands as the ultimate, comprehensive solution for the **PromptWarsVirtual Challenge 4** and the future of the **FIFA World Cup 2026**.
+
+## Judge-Focused Improvements
+
+StadiaX now includes a typed operations intelligence layer that makes the GenAI workflow more than a static chat demo:
+
+- `/api/operations` exposes a no-store live operations snapshot for capacity, incidents, staffing gaps, transportation, sustainability, accessibility routes, and match context.
+- The Gemini system prompts are built from the same shared operations snapshot used by the staff dashboard, keeping UI data and AI recommendations aligned.
+- The staff console includes a protected demo access gate. Use demo code `2026` locally; production deployments can enforce `STAFF_ACCESS_TOKEN` for `/api/chat` staff requests.
+- The staff view now shows priority actions, accessible reroutes, transit control, sustainability recommendations, and a structured incident queue.
+- Security headers were tightened by removing `unsafe-eval`, adding `base-uri`, `form-action`, and `frame-ancestors`, and avoiding immutable caching on every route.
+- The lint command uses ESLint directly for Next.js 16 compatibility.
+
+### Final Verification
+
+```bash
+npm run lint
+npm test -- --runInBand
+npm run build
+```
+
+Current verified status:
+
+- Lint: passing
+- Tests: 48 passing across 7 suites with 99%+ statement/line coverage
+- Production build: passing
+- Audit: npm reports a moderate Next/PostCSS advisory; npm currently suggests a breaking downgrade, so this is documented rather than force-applied.

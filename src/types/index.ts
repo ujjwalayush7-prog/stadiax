@@ -65,3 +65,54 @@ export interface ChatAPIError {
   /** Human-readable error description */
   error: string;
 }
+
+export type IncidentSeverity = 'low' | 'medium' | 'high';
+
+export interface OperationsIncident {
+  id: string;
+  title: string;
+  severity: IncidentSeverity;
+  zone: string;
+  status: 'active' | 'monitoring' | 'resolved';
+  recommendation: string;
+}
+
+export interface OperationsSnapshot {
+  match: {
+    fixture: string;
+    venue: string;
+    minute: number;
+    score: string;
+    weather: string;
+    updatedAt: string;
+  };
+  capacity: {
+    current: number;
+    maximum: number;
+    percentage: number;
+    trend: string;
+  };
+  incidents: OperationsIncident[];
+  staff: {
+    deployed: number;
+    zones: number;
+    gap: string;
+  };
+  transport: {
+    parkingCapacity: number;
+    metroStatus: string;
+    rideshareStatus: string;
+    recommendation: string;
+  };
+  sustainability: {
+    wasteDiversion: number;
+    target: number;
+    energyMw: number;
+    recommendation: string;
+  };
+  accessibility: {
+    openRoutes: string[];
+    alerts: string[];
+    recommendation: string;
+  };
+}

@@ -1,31 +1,82 @@
 'use client';
 
-/**
- * StaffView Component
- * Renders the Staff Operations dashboard with operational metric cards
- * covering all challenge pillars (Crowd Management, Incidents, Energy/Sustainability,
- * Staff Deployment, Transportation) and the Operations AI chatbot for
- * real-time decision support.
- *
- * Uses the shared `useChatBot` hook to eliminate code duplication.
- */
-
-import { Send, Users, Zap, AlertTriangle, ShieldCheck, Bus, Leaf } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import {
+  Send,
+  Users,
+  Zap,
+  AlertTriangle,
+  ShieldCheck,
+  Bus,
+  Leaf,
+  Lock,
+  Accessibility,
+} from 'lucide-react';
 import styles from '../app/page.module.css';
 import { useChatBot } from '../hooks/useChatBot';
+import { operationsSnapshot } from '../lib/operations';
+
+const DEMO_STAFF_CODE = '2026';
 
 export default function StaffView() {
-  const {
-    messages,
-    input,
-    setInput,
-    isLoading,
-    sendMessage,
-  } = useChatBot({
+  const [staffCode, setStaffCode] = useState('');
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [accessError, setAccessError] = useState('');
+  const { messages, input, setInput, isLoading, sendMessage } = useChatBot({
     persona: 'staff',
-    initialMessage: 'Operations AI ready. Current active incidents: Gate 4 Congestion.',
+    initialMessage:
+      'Operations AI ready. Gate 4 congestion is the highest priority. Ask for a deployment plan or accessible reroute.',
     errorFallback: 'Error connecting to operations server.',
   });
+
+  const highPriorityIncident = useMemo(
+    () => operationsSnapshot.incidents.find((incident) => incident.severity === 'high'),
+    []
+  );
+
+  function unlockStaffView(e: React.FormEvent) {
+    e.preventDefault();
+    if (staffCode.trim() === DEMO_STAFF_CODE) {
+      setIsAuthorized(true);
+      setAccessError('');
+      return;
+    }
+    setAccessError('Use demo staff code 2026');
+  }
+
+  if (!isAuthorized) {
+    return (
+      <section className={`glass-panel ${styles.accessPanel}`} aria-label="Staff access gate">
+        <Lock size={32} color="var(--neon-green)" aria-hidden="true" />
+        <div>
+          <h2>Staff Operations Access</h2>
+          <p>
+            Protected demo console for incident response, crowd routing, accessibility
+            support, transportation coordination, and sustainability operations.
+          </p>
+        </div>
+        <form className={styles.accessForm} onSubmit={unlockStaffView}>
+          <label htmlFor="staff-code" className="sr-only">
+            Staff access code
+          </label>
+          <input
+            id="staff-code"
+            type="password"
+            value={staffCode}
+            onChange={(e) => setStaffCode(e.target.value)}
+            placeholder="Demo code"
+            aria-describedby={accessError ? 'staff-code-error' : undefined}
+          />
+          <button type="submit">Unlock</button>
+        </form>
+        {accessError && (
+          <p id="staff-code-error" className={styles.accessError} role="alert">
+            {accessError}
+          </p>
+        )}
+      </section>
+    );
+  }
 
   return (
     <div className={styles.staffContent}>
@@ -36,9 +87,11 @@ export default function StaffView() {
           aria-live="assertive"
           aria-atomic="true"
         >
-          <span className="live-indicator"></span> LIVE
+          <span className="live-indicator"></span> LIVE OPS
         </span>
-        <span className={styles.tournament}>FIFA World Cup 2026™</span>
+        <span className={styles.tournament}>
+          {operationsSnapshot.match.fixture} - {operationsSnapshot.match.venue}
+        </span>
       </div>
 
       <section className={styles.statsGrid} aria-label="Operational Metrics">
@@ -47,8 +100,11 @@ export default function StaffView() {
             <Users size={20} color="var(--fifa-blue)" aria-hidden="true" />
             <span>Stadium Capacity</span>
           </div>
-          <h2 tabIndex={0}>94%</h2>
-          <span className={styles.trendGood}>+2% in last 15m (68,402 / 72,000)</span>
+          <h2 tabIndex={0}>{operationsSnapshot.capacity.percentage}%</h2>
+          <span className={styles.trendGood}>
+            {operationsSnapshot.capacity.trend} ({operationsSnapshot.capacity.current.toLocaleString()} /{' '}
+            {operationsSnapshot.capacity.maximum.toLocaleString()})
+          </span>
         </div>
 
         <div id="stat-incidents" className={`glass-panel ${styles.statCard}`}>
@@ -57,9 +113,9 @@ export default function StaffView() {
             <span>Active Incidents</span>
           </div>
           <h2 tabIndex={0} role="status" aria-live="assertive">
-            3
+            {operationsSnapshot.incidents.length}
           </h2>
-          <span className={styles.trendNeutral}>Gate 4 Congestion requires attention</span>
+          <span className={styles.trendNeutral}>{highPriorityIncident?.title} requires action</span>
         </div>
 
         <div id="stat-energy" className={`glass-panel ${styles.statCard}`}>
@@ -67,8 +123,8 @@ export default function StaffView() {
             <Zap size={20} color="var(--neon-green)" aria-hidden="true" />
             <span>Energy Usage</span>
           </div>
-          <h2 tabIndex={0}>4.2 MW</h2>
-          <span className={styles.trendGood}>-12% from baseline (Optimized)</span>
+          <h2 tabIndex={0}>{operationsSnapshot.sustainability.energyMw} MW</h2>
+          <span className={styles.trendGood}>Optimized below peak baseline</span>
         </div>
 
         <div id="stat-staff" className={`glass-panel ${styles.statCard}`}>
@@ -76,8 +132,8 @@ export default function StaffView() {
             <ShieldCheck size={20} color="var(--primary-purple)" aria-hidden="true" />
             <span>Staff Deployed</span>
           </div>
-          <h2 tabIndex={0}>412</h2>
-          <span className={styles.trend}>Optimal coverage across 6 zones</span>
+          <h2 tabIndex={0}>{operationsSnapshot.staff.deployed}</h2>
+          <span className={styles.trend}>{operationsSnapshot.staff.gap}</span>
         </div>
 
         <div id="stat-transport" className={`glass-panel ${styles.statCard}`}>
@@ -85,10 +141,8 @@ export default function StaffView() {
             <Bus size={20} color="var(--fifa-blue)" aria-hidden="true" />
             <span>Transportation</span>
           </div>
-          <h2 tabIndex={0}>88%</h2>
-          <span className={styles.trendNeutral}>
-            Parking Lots A, B near capacity — Metro on schedule
-          </span>
+          <h2 tabIndex={0}>{operationsSnapshot.transport.parkingCapacity}%</h2>
+          <span className={styles.trendNeutral}>{operationsSnapshot.transport.metroStatus}</span>
         </div>
 
         <div id="stat-sustainability" className={`glass-panel ${styles.statCard}`}>
@@ -96,10 +150,48 @@ export default function StaffView() {
             <Leaf size={20} color="var(--neon-green)" aria-hidden="true" />
             <span>Sustainability</span>
           </div>
-          <h2 tabIndex={0}>73%</h2>
+          <h2 tabIndex={0}>{operationsSnapshot.sustainability.wasteDiversion}%</h2>
           <span className={styles.trendGood}>
-            Waste diversion rate — Target: 80%
+            Waste diversion - Target: {operationsSnapshot.sustainability.target}%
           </span>
+        </div>
+      </section>
+
+      <section className={styles.decisionGrid} aria-label="Real-time decision support">
+        <article className={`glass-panel ${styles.decisionCard}`}>
+          <h3>Priority Action</h3>
+          <p>{highPriorityIncident?.recommendation}</p>
+        </article>
+        <article className={`glass-panel ${styles.decisionCard}`}>
+          <h3>Accessible Reroute</h3>
+          <p>{operationsSnapshot.accessibility.recommendation}</p>
+        </article>
+        <article className={`glass-panel ${styles.decisionCard}`}>
+          <h3>Transit Control</h3>
+          <p>{operationsSnapshot.transport.recommendation}</p>
+        </article>
+        <article className={`glass-panel ${styles.decisionCard}`}>
+          <h3>Sustainability Push</h3>
+          <p>{operationsSnapshot.sustainability.recommendation}</p>
+        </article>
+      </section>
+
+      <section className={styles.incidentList} aria-label="Incident queue">
+        <h3>Incident Queue</h3>
+        {operationsSnapshot.incidents.map((incident) => (
+          <article key={incident.id} className={styles.incidentItem}>
+            <div>
+              <strong>{incident.title}</strong>
+              <span>{incident.zone} - {incident.status}</span>
+            </div>
+            <span className={`${styles.severityBadge} ${styles[incident.severity]}`}>
+              {incident.severity}
+            </span>
+          </article>
+        ))}
+        <div className={styles.accessibilityNote}>
+          <Accessibility size={18} aria-hidden="true" />
+          <span>{operationsSnapshot.accessibility.alerts[0]}</span>
         </div>
       </section>
 
@@ -110,7 +202,7 @@ export default function StaffView() {
       >
         <header className={styles.chatHeader}>
           <h3>Operations AI</h3>
-          <span className={styles.aiBadge}>Secure Operations Link</span>
+          <span className={styles.aiBadge}>Token-ready Operations Link</span>
         </header>
 
         <div
